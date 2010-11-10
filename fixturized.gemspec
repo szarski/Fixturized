@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "fixturized.gemspec",
      "lib/database_handler.rb",
      "lib/file_handler.rb",
      "lib/fixturized.rb",
