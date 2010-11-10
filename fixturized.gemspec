@@ -32,7 +32,8 @@ Gem::Specification.new do |s|
      "lib/wrapper.rb",
      "spec/fixturized_spec.rb",
      "spec/spec.opts",
-     "spec/spec_helper.rb"
+     "spec/spec_helper.rb",
+     "Gemfile"
   ]
   s.homepage = %q{http://github.com/szarski/fixturized}
   s.rdoc_options = ["--charset=UTF-8"]
