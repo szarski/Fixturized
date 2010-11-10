@@ -201,23 +201,22 @@ describe "Fixturized" do
     # collect_db_data and load_db_data
     it "should collect data form the db properly" do
       pending
-      runner = Fixturized::Runner.new do
-        DATA_INITAILIZATION_HERE
-      end
-      runner.collect_db_data.should == DATA_HERE
-      runner.write_db_data.should == DATA_HERE
+      Fixturized::DatabaseHandler.collect_db_data
     end
 
     it "should write data to db properly" do
       pending
+      Fixturized::DatabaseHandler.write_db_data data
     end
 
-    it "should clear database when begining block first run" do
+    it "should determine variables from models" do
       pending
+      Fixturized::DatabaseHandler.is_model? value
     end
 
-    it "should clear database before loading data" do
+    it "should clear the database" do
       pending
+      Fixturized::DatabaseHandler.clear_db
     end
   end
 end
