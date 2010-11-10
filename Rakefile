@@ -5,13 +5,13 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "fixturized"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = "a work in porgress on speeding up your tests by caching initialized data into fixtures"
+    gem.description = "a work in porgress on speeding up your tests by caching initialized data into fixtures"
     gem.email = "jacek@applicake.com"
     gem.homepage = "http://github.com/szarski/fixturized"
     gem.authors = ["Jacek Szarski"]
     gem.add_development_dependency "rspec"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.add_development_dependency "ParseTree"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
