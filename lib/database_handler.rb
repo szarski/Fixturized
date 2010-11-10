@@ -36,7 +36,7 @@ module Fixturized::DatabaseHandler
   end
 
   def clear_db
-    clear_all_tables
+    self.engine.clear_all_tables
   end
 
   module ActiveRecordAndMysqlEngine
@@ -46,11 +46,11 @@ module Fixturized::DatabaseHandler
     end
 
     def substitute_model(value)
-      return [value.class, value.id]
+      return [value.class.to_s, value.id]
     end
 
     def load_model(value)
-      klass = value.first
+      klass = eval value.first
       id = value.last.to_i
       return klass.find(id)
     end
@@ -69,15 +69,13 @@ module Fixturized::DatabaseHandler
 
     def object_to_data(objects)
       objects.each do |tbl, fixtures|
-        begin
+        unless fixtures.to_a.empty?
           klass = tbl.classify.constantize
           ActiveRecord::Base.transaction do 
-              unless fixtures.to_a.empty?
-                statement =  "INSERT INTO #{tbl} (#{fixtures.first.keys.collect{|k| "`#{k}`"}.join(",")}) " + fixtures.collect do |fixture|
-                  "(SELECT #{fixture.values.collect { |value| ActiveRecord::Base.connection.quote(value) }.join(', ')})"
-                end.join(" UNION ")
-                ActiveRecord::Base.connection.execute statement, 'Fixture Insert'
-              end
+            statement =  "INSERT INTO #{tbl} (#{fixtures.first.keys.collect{|k| "`#{k}`"}.join(",")}) " + fixtures.collect do |fixture|
+              "(SELECT #{fixture.values.collect { |value| ActiveRecord::Base.connection.quote(value) }.join(', ')})"
+            end.join(" UNION ")
+            ActiveRecord::Base.connection.execute statement, 'Fixture Insert'
           end
         end
       end
@@ -86,8 +84,11 @@ module Fixturized::DatabaseHandler
     def data_to_object
       objects = {}
       interesting_tables.each do |tbl|
-        klass = tbl.classify.constantize
-        objects[tbl] = klass.find(:all).collect(&:attributes)
+        begin
+          klass = tbl.classify.constantize
+          objects[tbl] = klass.find(:all).collect(&:attributes)
+        rescue Exception
+        end
       end
       return objects
     end  
