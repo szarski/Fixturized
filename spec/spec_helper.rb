@@ -1,14 +1,13 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'fixturized'
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
 require 'mocha'
 
 TEMP_DIR = File.join(File.dirname(__FILE__),'..','temp')
 TEMP_FIXTURE_DIR = File.join(TEMP_DIR,'fixtures')
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
    config.mock_with :mocha
 end
 
