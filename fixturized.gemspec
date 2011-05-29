@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Jacek Szarski", "Marcin Bunsch"]
   s.email       = ["jacek@applicake.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: A work in porgress on speeding up your tests by caching initialized data into fixtures}
-  s.description = %q{TODO: A work in porgress on speeding up your tests by caching initialized data into fixtures}
+  s.summary     = %q{A work in porgress on speeding up your tests by caching initialized data into fixtures}
+  s.description = %q{A work in porgress on speeding up your tests by caching initialized data into fixtures}
 
   s.rubyforge_project = "fixturized"
 
