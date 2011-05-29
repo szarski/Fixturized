@@ -8,7 +8,6 @@ module Fixturized
 end
 
 # external requires:
-require 'rubygems'
 require 'parse_tree'
 require 'parse_tree_extensions'
 require 'digest/md5'
