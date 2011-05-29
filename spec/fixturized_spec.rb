@@ -147,8 +147,8 @@ describe "Fixturized" do
       end
 
       it "should retrieve objects on and after first run" do
-        Fixturized::FileHandler.expects(:write_fixture).with {|name, content| content[:models] == {"model" => [SomeModel,5]}}.once
-        Fixturized::FileHandler.expects(:load_fixture).returns(:models => {"model" => [SomeModel,5]}, :variables => {})
+        Fixturized::FileHandler.expects(:write_fixture).with {|name, content| content[:models] == {"model" => ["SomeModel",5]}}.once
+        Fixturized::FileHandler.expects(:load_fixture).returns(:models => {"model" => ["SomeModel",5]}, :variables => {})
         SomeModel.expects(:find).with(5).returns(SomeModel.new)
         fixturized do |o|
           o.model = SomeModel.new
