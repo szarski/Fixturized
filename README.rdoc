@@ -1,7 +1,0 @@
-= fixturized
-
-Work in progress on speeding up rSpec tests
-
-== Copyright
-
-Copyright (c) 2010 Jacek Szarski. See LICENSE for details.
