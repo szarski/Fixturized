@@ -80,10 +80,13 @@ There are two main problems with fixturized:
 
   * you can not stack fixturized blocks (each erases the database)
   * instead of using instance variables you need to use the Fixturized::Wrapper's methods:
+
   ```ruby
     @user = Factory :user
   ```
+
   becomes:
+
   ```ruby
     fixturized do |o|
       o.user = Factory :user
