@@ -1,4 +1,4 @@
-# fixturized [![Build Status](http://travis-ci.org/szarski/fixturized.png)](http://travis-ci.org/szarski/fixturized)
+# fixturized [![Build Status](http://travis-ci.org/szarski/Fixturized.png)](http://travis-ci.org/szarski/Fixturized)
 
 Fixturized makes your tests' data generation take less time.
 
