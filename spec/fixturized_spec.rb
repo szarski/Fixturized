@@ -192,31 +192,60 @@ describe "Fixturized" do
   end
 
   describe "collecting data [DB related]" do
-    before(:all) do
-      #TODO: hook db here
-    end
-    after(:all) do
-      #TODO: close db connection here
-    end
-    # collect_db_data and load_db_data
-    it "should collect data form the db properly" do
-      pending
-      Fixturized::DatabaseHandler.collect_db_data
+    describe "interface" do
+
+      it "should have a method #engine that returns the engine class" do
+        Fixturized::DatabaseHandler.engine.should be_a(Module)
+        Fixturized::DatabaseHandler.engine.should be_a(Fixturized::DatabaseHandler::ActiveRecordAndMysqlEngine)
+      end
+
+      describe "should forewart method to engine:" do
+
+        it "#collect_db_data" do
+          Fixturized::DatabaseHandler.engine.expects(:data_to_object).with()
+          Fixturized::DatabaseHandler.collect_db_data
+        end
+
+        it "#write_db_data" do
+          data = mock
+          Fixturized::DatabaseHandler.engine.expects(:object_to_data).with(data)
+          Fixturized::DatabaseHandler.write_db_data data
+        end
+
+        it "is_model?" do
+          model = mock
+          Fixturized::DatabaseHandler.engine.expects(:is_model?).with(model)
+          Fixturized::DatabaseHandler.is_model? model
+        end
+
+        it "#clear_db" do
+          Fixturized::DatabaseHandler.engine.expects(:clear_all_tables).with()
+          Fixturized::DatabaseHandler.clear_db
+        end
+
+        it "#substitute_model" do
+          model = mock
+          Fixturized::DatabaseHandler.engine.expects(:substitute_model).with(model)
+          Fixturized::DatabaseHandler.substitute_model model
+        end
+
+        it "#load_model" do
+          data = mock
+          Fixturized::DatabaseHandler.engine.expects(:load_model).with(data)
+          Fixturized::DatabaseHandler.load_model data
+        end
+      end
     end
 
-    it "should write data to db properly" do
-      pending
-      Fixturized::DatabaseHandler.write_db_data data
-    end
-
-    it "should determine variables from models" do
-      pending
-      Fixturized::DatabaseHandler.is_model? value
-    end
-
-    it "should clear the database" do
-      pending
-      Fixturized::DatabaseHandler.clear_db
+    describe "engines" do
+      describe Fixturized::DatabaseHandler::ActiveRecordAndMysqlEngine do
+        before(:all) do
+          #TODO: hook db here
+        end
+        after(:all) do
+          #TODO: close db connection here
+        end
+      end
     end
   end
 end
