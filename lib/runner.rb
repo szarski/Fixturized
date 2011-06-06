@@ -20,7 +20,7 @@ class Fixturized::Runner
   end
 
   def block_hash
-    Digest::MD5.hexdigest(@block.to_sexp.to_s)
+    Digest::MD5.hexdigest(@block.to_source)
   end
 
 end

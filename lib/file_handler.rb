@@ -7,7 +7,7 @@ module Fixturized::FileHandler
 
   def create_fixture_dir
     if Dir[self.fixture_dir].empty?
-      File.makedirs self.fixture_dir
+      FileUtils.mkdir_p self.fixture_dir
     end
   end
 

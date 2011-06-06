@@ -1,5 +1,4 @@
 module Fixturized
-  require 'ftools'
 
   def self.create_fixture_dir
     Fixturized::FileHandler.create_fixture_dir
@@ -8,8 +7,7 @@ module Fixturized
 end
 
 # external requires:
-require 'parse_tree'
-require 'parse_tree_extensions'
+require 'sourcify'
 require 'digest/md5'
 
 #internal requires:
