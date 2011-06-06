@@ -1,6 +1,6 @@
-# fixturized
+# fixturized [![Build Status](http://travis-ci.org/szarski/fixturized.png)](http://travis-ci.org/szarski/fixturized)
 
-Foxturized makes your tests' data generation take less time.
+Fixturized makes your tests' data generation take less time.
 
 Remember how fast fixtures worked? But they were really painfull if you added one more after_save in your model that filled some field in and you had to update your fixture files.
 
