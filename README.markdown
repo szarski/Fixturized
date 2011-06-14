@@ -8,6 +8,10 @@ FactoryGirl for instance is awesome because it gives you extreme flexibility. Bu
 
 Fixturized is a solution in between fixtures and whatever you want, which means it will generate fixtures out of your FactoryGirl (or whatever you use) calls and refresh them if anything changes.
 
+## installation
+
+<pre>gem install fixturized</pre>
+
 ## usage
 
 Let's say you want to speed up an existing test.
