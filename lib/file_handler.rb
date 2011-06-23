@@ -1,6 +1,12 @@
 module Fixturized::FileHandler
   # All filesystem operations are handled here
 
+  def base_dir
+    return File.join(File.expand_path(RAILS_ROOT), 'fixturized')
+  end
+
+  self.extend self
+=begin
   def fixture_dir
     "#{RAILS_ROOT}/fixturized"
   end
@@ -28,5 +34,5 @@ module Fixturized::FileHandler
     return File.join(self.fixture_dir, filename)
   end
 
-  self.extend self
+=end
 end
