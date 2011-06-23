@@ -240,10 +240,87 @@ describe "Fixturized" do
     describe "engines" do
       describe Fixturized::DatabaseHandler::ActiveRecordAndMysqlEngine do
         before(:all) do
+          pending
           #TODO: hook db here
         end
         after(:all) do
           #TODO: close db connection here
+        end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#    def is_model?(value)
+#      defined?(ActiveRecord::Base) and value.class.superclass == ActiveRecord::Base
+#    def substitute_model(value)
+#      return [value.class.to_s, value.id]
+#    def load_model(value)
+#      klass = eval value.first
+#      id = value.last.to_i
+#      return klass.find(id)
+#    def clear_all_tables
+#      interesting_tables.each do |tbl|
+#        ActiveRecord::Base.connection.execute "DELETE FROM #{tbl}"
+#      end
+#    def interesting_tables
+#      ActiveRecord::Base.connection.tables.sort.reject do |tbl|
+#        ['schema_info', 'sessions', 'public_exceptions'].include?(tbl)
+#      end
+#    def object_to_data(objects)
+#      objects.each do |tbl, fixtures|
+#        unless fixtures.to_a.empty?
+#          klass = tbl.classify.constantize
+#          ActiveRecord::Base.transaction do 
+#            statement =  "INSERT INTO #{tbl} (#{fixtures.first.keys.collect{|k| "`#{k}`"}.join(",")}) " + fixtures.collect do |fixture|
+#              "(SELECT #{fixture.values.collect { |value| ActiveRecord::Base.connection.quote(value) }.join(', ')})"
+#            end.join(" UNION ")
+#            ActiveRecord::Base.connection.execute statement, 'Fixture Insert'
+#          end
+#        end
+#      end
+#    def data_to_object
+#      objects = {}
+#      interesting_tables.each do |tbl|
+#        begin
+#          klass = tbl.classify.constantize
+#          objects[tbl] = klass.find(:all).collect(&:attributes)
+#        rescue Exception
+#        end
+#      end
+#      return objects
+#    end  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        it "#clear_all_tables should remove all tables contents" do
         end
       end
     end

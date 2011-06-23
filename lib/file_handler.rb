@@ -1,6 +1,10 @@
 module Fixturized::FileHandler
   # All filesystem operations are handled here
 
+  def dump_module
+    Marshal
+  end
+
   def fixture_dir
     "#{RAILS_ROOT}/fixturized"
   end
@@ -13,11 +17,11 @@ module Fixturized::FileHandler
 
   def write_fixture(filename, objects)
     Fixturized.create_fixture_dir
-    return File.open(self.fixture_path(filename), 'w') {|f| YAML.dump objects, f}      
+    return File.open(self.fixture_path(filename), 'w') {|f| self.dump_module.dump objects, f}      
   end
 
   def load_fixture(filename)
-    return YAML.load_file(self.fixture_path(filename))
+    return self.dump_module.load(File.read((self.fixture_path(filename))))
   end
 
   def fixture_exists?(filename)
