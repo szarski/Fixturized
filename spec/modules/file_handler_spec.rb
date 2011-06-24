@@ -25,7 +25,7 @@ describe Fixturized::FileHandler do
 
   def write_temp_file(content)
     create_temp_base_dir
-    FileTest.exists?(TEMP_FILE_PATH).should be_false
+    remove_temp_file
     File.new(TEMP_FILE_PATH, "w") do |f|
       f.puts content
     end
