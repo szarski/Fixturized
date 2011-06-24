@@ -80,7 +80,7 @@ describe Fixturized::FileHandler do
       Fixturized::FileHandler.expects :create_base_dir
       Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
       remove_temp_file
-      Fixturized::FileHandler.write(TEMP_FILE_PATH,"some content")
+      Fixturized::FileHandler.write("some.filetype","some content")
       read_temp_file.should == "some content"
     end
   end
