@@ -17,7 +17,7 @@ describe Fixturized::FileHandler do
   end
 
   def create_temp_base_dir
-    if temp_base_dir_exists?
+    unless temp_base_dir_exists?
       FileUtils.mkdir_p TEMP_BASE_DIR
     end
     temp_base_dir_exists?.should be_true
