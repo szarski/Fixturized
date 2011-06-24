@@ -5,6 +5,12 @@ module Fixturized::FileHandler
     return File.join(File.expand_path(RAILS_ROOT), 'fixturized')
   end
 
+  def create_base_dir
+    if Dir[base_dir].empty?
+      FileUtils.mkdir_p base_dir
+    end
+  end
+
   self.extend self
 =begin
   def fixture_dir
