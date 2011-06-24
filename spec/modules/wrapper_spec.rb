@@ -14,14 +14,23 @@ Fixturized::Wrapper
   end
 
   describe "run" do
-    it "should run the block" do
-      @a=1
-      wrapper = Fixturized::Wrapper.new do
-        @a=2
+    before :each do
+      @called = false
+      @wrapper = Fixturized::Wrapper.new do
+        @called = true
       end
-      @a.should == 1
-      wrapper.run
-      @a.should == 2
+    end
+
+    it "should call the block" do
+      @called.should be_false
+      @wrapper.call
+      @called.should be_true
+    end
+    
+    it "should accept and pass arguments" do
+      arg1, arg2 = mock(), mock()
+      @wrapper.block.expects(:call).with(arg1, arg2)
+      @wrapper.call(arg1, arg2)
     end
   end
 end

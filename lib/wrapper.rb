@@ -8,8 +8,8 @@ class Fixturized::Wrapper
     @block = block
   end
 
-  def run
-    self.block.call
+  def call(*args)
+    self.block.call(*args)
   end
 
 end
