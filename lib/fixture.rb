@@ -1,0 +1,3 @@
+class Fixturized::Fixture
+
+end
