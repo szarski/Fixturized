@@ -48,10 +48,16 @@ describe Fixturized::Fixture do
   describe ".find" do
     it "should set the file name and load from file" do
       file_content = mock()
+      Fixturized::FileHandler.expects(:exists?).with("whatever.yml").returns true
       Fixturized::FileHandler.expects(:read).with("whatever.yml").returns(file_content)
       Fixturized::Fixture.any_instance.expects(:load).with(file_content)
       fixture = Fixturized::Fixture.find "whatever"
       fixture.filename.should == "whatever"
+    end
+
+    it "should return nil if file not found" do
+      Fixturized::FileHandler.expects(:exists?).with("whatever.yml").returns false
+      Fixturized::Fixture.find("whatever").should be_nil
     end
   end
 

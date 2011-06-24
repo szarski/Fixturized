@@ -16,9 +16,13 @@ class Fixturized::Fixture
   end
 
   def self.find(filename)
-    fixture = self.new(filename)
-    fixture.load Fixturized::FileHandler.read("#{filename}.yml")
-    return fixture
+    if Fixturized::FileHandler.exists?("#{filename}.yml")
+      fixture = self.new(filename)
+      fixture.load Fixturized::FileHandler.read("#{filename}.yml")
+      return fixture
+    else
+      return nil
+    end
   end
 
   def [](*args)
