@@ -1,12 +1,12 @@
 require 'spec_helper'
 describe Fixturized::FileHandler do
   ####### helper stuff #######
-  TEMP_DIR = File.join(File.dirname(__FILE__),'..','temp')
+  TEMP_DIR = File.expand_path(File.join(File.dirname(__FILE__),'..','temp'))
   TEMP_BASE_DIR = File.join(TEMP_DIR,'base_dir')
   TEMP_FILE_PATH = File.join(TEMP_BASE_DIR, 'some.temp.file')
 
   def temp_base_dir_exists?
-    Dir[TEMP_BASE_DIR]
+    !Dir[TEMP_BASE_DIR].empty?
   end
 
   def remove_temp_base_dir
@@ -77,6 +77,7 @@ describe Fixturized::FileHandler do
 
   describe ".write" do
     it "should save a file with given content" do
+      Fixturized::FileHandler.expects :create_base_dir
       Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
       remove_temp_file
       Fixturized::FileHandler.write(TEMP_FILE_PATH,"some content")
@@ -86,6 +87,7 @@ describe Fixturized::FileHandler do
 
   describe ".read" do
     it "should return file content if exists" do
+      Fixturized::FileHandler.expects :create_base_dir
       Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
       write_temp_file "some other content"
       Fixturized::FileHandler.read("somefile.type").should == "some other content"
