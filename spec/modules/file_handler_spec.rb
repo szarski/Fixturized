@@ -26,10 +26,11 @@ describe Fixturized::FileHandler do
   def write_temp_file(content)
     create_temp_base_dir
     remove_temp_file
-    File.new(TEMP_FILE_PATH, "w") do |f|
-      f.puts content
+    File.open(TEMP_FILE_PATH, "w") do |f|
+      f.write content
     end
     FileTest.exists?(TEMP_FILE_PATH).should be_true
+    read_temp_file.should == content
   end
 
   def read_temp_file
@@ -88,32 +89,30 @@ describe Fixturized::FileHandler do
   describe ".read" do
     it "should return file content if exists" do
       Fixturized::FileHandler.expects :create_base_dir
-      Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
+      Fixturized::FileHandler.expects(:filename_with_path).at_least_once.with("some.filetype").returns TEMP_FILE_PATH
       write_temp_file "some other content"
-      Fixturized::FileHandler.read("somefile.type").should == "some other content"
+      Fixturized::FileHandler.read("some.filetype").should == "some other content"
     end
 
     it "should return nil if file not found" do
       Fixturized::FileHandler.expects :create_base_dir
-      Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
+      Fixturized::FileHandler.expects(:filename_with_path).at_least_once.with("some.filetype").returns TEMP_FILE_PATH
       remove_temp_file
-      Fixturized::FileHandler.read("somefile.type").should == be_nil
+      Fixturized::FileHandler.read("some.filetype").should be_nil
     end
   end
 
   describe ".exists?" do
     it "should return true if file exists" do
-      Fixturized::FileHandler.expects :create_base_dir
-      Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
-      remove_temp_file
-      Fixturized::FileHandler.exists?("somefile.type").should == be_false
-    end
-
-    it "should return true if file doesnt exist" do
-      Fixturized::FileHandler.expects :create_base_dir
       Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
       write_temp_file "whatever"
-      Fixturized::FileHandler.exists?("somefile.type").should == be_false
+      Fixturized::FileHandler.exists?("some.filetype").should be_true
+    end
+
+    it "should return false if file doesnt exist" do
+      Fixturized::FileHandler.expects(:filename_with_path).with("some.filetype").returns TEMP_FILE_PATH
+      remove_temp_file
+      Fixturized::FileHandler.exists?("some.filetype").should be_false
     end
   end
 end
