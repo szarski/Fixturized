@@ -11,6 +11,10 @@ module Fixturized::FileHandler
     end
   end
 
+  def filename_with_path(filename)
+    return File.join(base_dir, filename)
+  end
+
   self.extend self
 =begin
   def fixture_dir
