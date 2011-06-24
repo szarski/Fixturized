@@ -20,6 +20,19 @@ module Fixturized::FileHandler
     return File.open(filename_with_path(filename), 'w') {|f| f.write(content)}
   end
 
+  def read(filename)
+    create_base_dir
+    if exists?(filename)
+      File.read(filename_with_path(filename))
+    else
+      nil
+    end
+  end
+
+  def exists?(filename)
+    FileTest.exists?(filename_with_path(filename))
+  end
+
   self.extend self
 =begin
   def fixture_dir
