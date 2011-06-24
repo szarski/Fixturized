@@ -16,7 +16,8 @@ module Fixturized::FileHandler
   end
 
   def write(filename, content)
-    return File.open(filename_with_path(filename), 'w') {|f| f.puts(content)}
+    create_base_dir
+    return File.open(filename_with_path(filename), 'w') {|f| f.write(content)}
   end
 
   self.extend self
