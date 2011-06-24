@@ -1,4 +1,20 @@
 class Fixturized::Wrapper
+  attr_reader :block
+
+  def initialize(&block)
+    unless block_given?
+      raise Exception.new("Fixturized::Wrapper must take a block at initialization.")
+    end
+    @block = block
+  end
+
+  def run
+    self.block.call
+  end
+
+end
+
+=begin
   attr_reader :variables, :models
 
   def initialize(variables={},models={})
@@ -55,3 +71,4 @@ class Fixturized::Wrapper
   end
 
 end
+=end
