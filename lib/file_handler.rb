@@ -15,6 +15,10 @@ module Fixturized::FileHandler
     return File.join(base_dir, filename)
   end
 
+  def write(filename, content)
+    return File.open(filename_with_path(filename), 'w') {|f| f.puts(content)}
+  end
+
   self.extend self
 =begin
   def fixture_dir
