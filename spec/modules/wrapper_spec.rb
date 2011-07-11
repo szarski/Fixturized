@@ -46,6 +46,12 @@ Fixturized::Wrapper
       @wrapper.call(arg1, arg2)
     end
 
+    it "should raise when reading without running the block" do
+      lambda {@wrapper.instance_variables}.should raise_error {|e| e.message.should =~ /without calling/}
+      @wrapper.call
+      @wrapper.instance_variables
+    end
+
     it "should collect instance variables" do
       @wrapper.call
       @wrapper.instance_variables.should be_a(Hash)

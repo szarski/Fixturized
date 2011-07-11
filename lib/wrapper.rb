@@ -1,5 +1,5 @@
 class Fixturized::Wrapper
-  attr_reader :block, :instance_variables
+  attr_reader :block
 
   def initialize(object, &block)
     @block_self = object
@@ -7,12 +7,14 @@ class Fixturized::Wrapper
       raise Exception.new("Fixturized::Wrapper must take a block at initialization.")
     end
     @block = block
+    @block_called = false
   end
 
   def call(*args)
     get_start_instance_variables
     self.block.call(*args)
     @instance_variables = self.get_instance_variables_diff
+    @block_called = true
   end
 
   def get_start_instance_variables
@@ -28,6 +30,11 @@ class Fixturized::Wrapper
     variable_names = @block_self.instance_variables
     variables = variable_names.inject({}) {|r, var_name| r.merge(var_name => @block_self.instance_variable_get(var_name))}
     return variables || {}
+  end
+
+  def instance_variables
+    raise Exception.new('attempt to call Fixturized::Wrapper#instance_variables without calling the block') unless @block_called
+    @instance_variables
   end
 
   def hash
