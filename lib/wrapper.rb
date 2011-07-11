@@ -11,12 +11,27 @@ class Fixturized::Wrapper
   end
 
   def call(*args)
+    get_start_constants
     get_start_instance_variables
     self.blocks.each do |b|
       b.call(*args)
     end
-    @instance_variables = self.get_instance_variables_diff
+    @instance_variables = get_instance_variables_diff
+    @constants = get_constants_diff
     @block_called = true
+  end
+
+  def get_constants
+    Object.constants.inject({}) {|r,const_name| r.merge({const_name => Object.const_get(const_name)})}
+  end
+
+  def get_start_constants
+    @start_constants = get_constants
+  end
+
+  def get_constants_diff
+    result = get_constants.to_a.reject {|name, value| @start_constants.keys.include?(name) and @start_constants[name] == value}
+    return result.inject({}){|r,(k,v)| r.merge(k=>v)}
   end
 
   def get_start_instance_variables
@@ -34,8 +49,17 @@ class Fixturized::Wrapper
     return variables || {}
   end
 
+  def ensure_block_called_for(name)
+    raise Exception.new("attempt to call Fixturized::Wrapper##{name} without calling the block") unless @block_called
+  end
+
+  def constants
+    ensure_block_called_for 'constants'
+    @constants
+  end
+
   def instance_variables
-    raise Exception.new('attempt to call Fixturized::Wrapper#instance_variables without calling the block') unless @block_called
+    ensure_block_called_for 'instance_variables'
     @instance_variables
   end
 

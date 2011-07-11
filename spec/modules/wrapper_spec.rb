@@ -71,5 +71,14 @@ Fixturized::Wrapper
       @wrapper.instance_variables.should include("@new_var")
       @wrapper.instance_variables.should == {"@called" => true, "@new_var" => @new_var_value, "@new_var2" => @new_var_value}
     end
+
+    it "should collect constants" do
+      block = lambda {B=3;C=4}
+      A=1
+      B=2
+      wrapper = Fixturized::Wrapper.new(self, [block])
+      wrapper.call
+      wrapper.constants.should == {"B" => 3, "C" => 4}
+    end
   end
 end
