@@ -1,18 +1,20 @@
 class Fixturized::Wrapper
-  attr_reader :block
+  attr_reader :blocks
 
-  def initialize(object, &block)
+  def initialize(object, blocks)
     @block_self = object
-    unless block_given?
-      raise Exception.new("Fixturized::Wrapper must take a block at initialization.")
+    unless blocks.is_a?(Array) and blocks.reject {|b| b.is_a?(Proc)}.empty?
+      raise Exception.new("Fixturized::Wrapper must take a block array at initialization.")
     end
-    @block = block
+    @blocks = blocks
     @block_called = false
   end
 
   def call(*args)
     get_start_instance_variables
-    self.block.call(*args)
+    self.blocks.each do |b|
+      b.call(*args)
+    end
     @instance_variables = self.get_instance_variables_diff
     @block_called = true
   end
@@ -38,7 +40,7 @@ class Fixturized::Wrapper
   end
 
   def hash
-    Digest::MD5.hexdigest(@block.to_source + @block_self.hash.to_s)
+    Digest::MD5.hexdigest(@blocks.map(&:to_source).join('||') + '|-|' + @block_self.hash.to_s)
   end
 
 end

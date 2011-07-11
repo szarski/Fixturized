@@ -3,35 +3,48 @@ describe Fixturized::Wrapper do
 
 Fixturized::Wrapper
 
-  it "should take a block and the self pointer" do
-    Fixturized::Wrapper.new(self) do
+  it "should take a blocks array and the self pointer" do
+    block = lambda do
       puts 1
     end
+    Fixturized::Wrapper.new(self, [block])
   end
 
   it "should raise if no block given" do
     lambda {Fixturized::Wrapper.new(self)}.should raise_exception
   end
 
+  it "should accept multiple blocks" do
+  end
+
   it "should return a hash that is a biection onto the block's code and the self object" do
     self1, self2=mock, mock
-    s1a1 = Fixturized::Wrapper.new(self1) {a=1}
-    s2a1 = Fixturized::Wrapper.new(self2) {a=1}
-    s1a2 = Fixturized::Wrapper.new(self1) {a=2}
-    s1a1_ = Fixturized::Wrapper.new(self1) {a= 1}
+    l = lambda {a=2}
+    s1a1 = Fixturized::Wrapper.new(self1, [lambda {a=1}])
+    s1a1a2 = Fixturized::Wrapper.new(self1, [lambda {a=1}, l])
+    s2a1 = Fixturized::Wrapper.new(self2, [lambda {a=1}])
+    s1a2 = Fixturized::Wrapper.new(self1, [lambda {a=2}])
+    s1a1_= Fixturized::Wrapper.new(self1, [lambda {a= 1}])
     s1a1.hash.should == s1a1_.hash
     s1a1.hash.should_not == s2a1.hash
     s1a1.hash.should_not == s1a2.hash
+    s1a1a2.hash.should == s1a1a2.hash
+    s1a1a2.hash.should_not == s1a1.hash
   end
 
   describe "call" do
     before :each do
       @new_var_value = mock()
       @called = false
-      @wrapper = Fixturized::Wrapper.new(self) do
+      block1 = lambda do
         @called = true
         @new_var = @new_var_value
       end
+      block2 = lambda do
+        @called = true
+        @new_var2 = @new_var_value
+      end
+      @wrapper = Fixturized::Wrapper.new(self, [block1, block2])
     end
 
     it "should call the block" do
@@ -42,7 +55,7 @@ Fixturized::Wrapper
     
     it "should accept and pass arguments" do
       arg1, arg2 = mock(), mock()
-      @wrapper.block.expects(:call).with(arg1, arg2)
+      @wrapper.blocks.first.expects(:call).with(arg1, arg2)
       @wrapper.call(arg1, arg2)
     end
 
@@ -56,7 +69,7 @@ Fixturized::Wrapper
       @wrapper.call
       @wrapper.instance_variables.should be_a(Hash)
       @wrapper.instance_variables.should include("@new_var")
-      @wrapper.instance_variables.should == {"@called" => true, "@new_var" => @new_var_value}
+      @wrapper.instance_variables.should == {"@called" => true, "@new_var" => @new_var_value, "@new_var2" => @new_var_value}
     end
   end
 end
