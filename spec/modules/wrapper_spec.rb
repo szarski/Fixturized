@@ -60,9 +60,14 @@ Fixturized::Wrapper
     end
 
     it "should raise when reading without running the block" do
-      lambda {@wrapper.instance_variables}.should raise_error {|e| e.message.should =~ /without calling/}
+      method_names = %w{instance_variables constants custom_stuff}
+      method_names.each do |method_name|
+        lambda {@wrapper.send(method_name)}.should raise_error {|e| e.message.should =~ /without calling/}
+      end
       @wrapper.call
-      @wrapper.instance_variables
+      method_names.each do |method_name|
+        @wrapper.send(method_name)
+      end
     end
 
     it "should collect instance variables" do
@@ -79,6 +84,17 @@ Fixturized::Wrapper
       wrapper = Fixturized::Wrapper.new(self, [block])
       wrapper.call
       wrapper.constants.should == {"B" => 3, "C" => 4}
+    end
+
+    it "should save custom stuff" do
+      Fixturized::Wrapper.should respond_to(:custom_stuff_names)
+      Fixturized::Wrapper.stubs(:custom_stuff_names).returns(%w{CUSTOM_DATA})
+      block = lambda {NORMAL_DATA = 1; CUSTOM_DATA = 2}
+      wrapper = Fixturized::Wrapper.new(self, [block])
+      wrapper.call
+      wrapper.custom_stuff.keys.should include("CUSTOM_DATA")
+      wrapper.custom_stuff.keys.should_not include("NORMAL_DATA")
+      wrapper.custom_stuff.should == {"CUSTOM_DATA" => 2}
     end
   end
 end

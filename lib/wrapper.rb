@@ -1,4 +1,5 @@
 class Fixturized::Wrapper
+  CUSTOM_STUFF_NAMES = []
   attr_reader :blocks
 
   def initialize(object, blocks)
@@ -18,7 +19,16 @@ class Fixturized::Wrapper
     end
     @instance_variables = get_instance_variables_diff
     @constants = get_constants_diff
+    @custom_stuff = get_custom_stuff
     @block_called = true
+  end
+
+  def proper_binding
+    @block_self.respond_to?(:binding) ? @block_self.send(:binding) : binding
+  end
+
+  def get_custom_stuff
+    self.class.custom_stuff_names.inject({}) {|r,thing| r.merge(thing => eval(thing, proper_binding))}
   end
 
   def get_constants
@@ -58,6 +68,11 @@ class Fixturized::Wrapper
     @constants
   end
 
+  def custom_stuff
+    ensure_block_called_for 'custom_stuff'
+    @custom_stuff
+  end
+
   def instance_variables
     ensure_block_called_for 'instance_variables'
     @instance_variables
@@ -65,6 +80,10 @@ class Fixturized::Wrapper
 
   def hash
     Digest::MD5.hexdigest(@blocks.map(&:to_source).join('||') + '|-|' + @block_self.hash.to_s)
+  end
+
+  def self.custom_stuff_names
+    CUSTOM_STUFF_NAMES
   end
 
 end
