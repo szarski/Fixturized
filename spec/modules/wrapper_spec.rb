@@ -13,7 +13,18 @@ Fixturized::Wrapper
     lambda {Fixturized::Wrapper.new(self)}.should raise_exception
   end
 
-  describe "run" do
+  it "should return a hash that is a biection onto the block's code and the self object" do
+    self1, self2=mock, mock
+    s1a1 = Fixturized::Wrapper.new(self1) {a=1}
+    s2a1 = Fixturized::Wrapper.new(self2) {a=1}
+    s1a2 = Fixturized::Wrapper.new(self1) {a=2}
+    s1a1_ = Fixturized::Wrapper.new(self1) {a= 1}
+    s1a1.hash.should == s1a1_.hash
+    s1a1.hash.should_not == s2a1.hash
+    s1a1.hash.should_not == s1a2.hash
+  end
+
+  describe "call" do
     before :each do
       @new_var_value = mock()
       @called = false

@@ -24,14 +24,14 @@ class Fixturized::Wrapper
     return result.inject({}){|r,(k,v)| r.merge(k=>v)}
   end
 
-  def get_instance_variable_names
-    return @block_self.instance_variables
-  end
-
   def get_instance_variables(variable_names=nil)
-    variable_names ||= get_instance_variable_names
+    variable_names = @block_self.instance_variables
     variables = variable_names.inject({}) {|r, var_name| r.merge(var_name => @block_self.instance_variable_get(var_name))}
     return variables || {}
+  end
+
+  def hash
+    Digest::MD5.hexdigest(@block.to_source + @block_self.hash.to_s)
   end
 
 end
