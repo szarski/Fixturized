@@ -76,78 +76,93 @@ Fixturized::Wrapper
     end
   end
 
-  describe "call" do
-    before :each do
-      @new_var_value = mock()
-      @called = false
-      block1 = lambda do
-        @called = true
-        @new_var = @new_var_value
-      end
-      block2 = lambda do
-        @called = true
-        @new_var2 = @new_var_value
-      end
-      @wrapper = Fixturized::Wrapper.new(self, [block1, block2])
-    end
+  describe "#call_blocks" do
+    let(:block1) {lambda {|a| 1}}
+    let(:block2) {lambda {|a| 2}}
+    subject {Fixturized::Wrapper.new(mock, [block1, block2])}
 
-    it "should call the block" do
-      @called.should be_false
-      @wrapper.call
-      @called.should be_true
-    end
-
-    it "should accept and pass arguments" do
-      arg1, arg2 = mock(), mock()
-      @wrapper.blocks.first.expects(:call).with(arg1, arg2)
-      @wrapper.blocks[1].expects(:call).with(arg1, arg2)
-      @wrapper.call(arg1, arg2)
-    end
-
-    it "should raise when reading without running the block" do
-      method_names = %w{instance_variables constants custom_stuff db_data}
-      method_names.each do |method_name|
-        lambda {@wrapper.send(method_name)}.should raise_error {|e| e.message.should =~ /without calling/}
-      end
-      @wrapper.call
-      method_names.each do |method_name|
-        @wrapper.send(method_name)
-      end
-    end
-
-    it "should collect instance variables" do
-      @wrapper.call
-      @wrapper.instance_variables.should be_a(Hash)
-      @wrapper.instance_variables.should == {:@called => true, :@new_var => @new_var_value, :@new_var2 => @new_var_value}
-    end
-
-    it "should collect constants" do
-      block = lambda {B=3;C=4}
-      A=1
-      B=2
-      wrapper = Fixturized::Wrapper.new(self, [block])
-      wrapper.call
-      wrapper.constants.should == {:B => 3, :C => 4}
-    end
-
-    it "should save custom stuff" do
-      Fixturized::Wrapper.should respond_to(:custom_stuff_names)
-      Fixturized::Wrapper.stubs(:custom_stuff_names).returns(%w{CUSTOM_DATA})
-      block = lambda {NORMAL_DATA = 1; CUSTOM_DATA = 2}
-      wrapper = Fixturized::Wrapper.new(self, [block])
-      wrapper.call
-      wrapper.custom_stuff.keys.should include("CUSTOM_DATA")
-      wrapper.custom_stuff.keys.should_not include("NORMAL_DATA")
-      wrapper.custom_stuff.should == {"CUSTOM_DATA" => 2}
-    end
-
-    it "should save database data" do
-      block = lambda {NORMAL_DATA = 1; CUSTOM_DATA = 2}
-      wrapper = Fixturized::Wrapper.new(self, [block])
-      db_mock = mock
-      Fixturized::DatabaseHandler.expects(:collect_db_data).returns(db_mock)
-      wrapper.call
-      wrapper.db_data.should == db_mock
+    it "should call all the blocks" do
+      block1.expects(:call).with
+      block2.expects(:call).with
+      subject.call_blocks
     end
   end
 end
+
+# (JS) will move all that to a different class
+#
+#  describe "call" do
+#    before :each do
+#      @new_var_value = mock()
+#      @called = false
+#      block1 = lambda do
+#        @called = true
+#        @new_var = @new_var_value
+#      end
+#      block2 = lambda do
+#        @called = true
+#        @new_var2 = @new_var_value
+#      end
+#      @wrapper = Fixturized::Wrapper.new(self, [block1, block2])
+#    end
+#
+#    it "should call the block" do
+#      @called.should be_false
+#      @wrapper.call
+#      @called.should be_true
+#    end
+#
+#    it "should accept and pass arguments" do
+#      arg1, arg2 = mock(), mock()
+#      @wrapper.blocks.first.expects(:call).with(arg1, arg2)
+#      @wrapper.blocks[1].expects(:call).with(arg1, arg2)
+#      @wrapper.call(arg1, arg2)
+#    end
+#
+#    it "should raise when reading without running the block" do
+#      method_names = %w{instance_variables constants custom_stuff db_data}
+#      method_names.each do |method_name|
+#        lambda {@wrapper.send(method_name)}.should raise_error {|e| e.message.should =~ /without calling/}
+#      end
+#      @wrapper.call
+#      method_names.each do |method_name|
+#        @wrapper.send(method_name)
+#      end
+#    end
+#
+#    it "should collect instance variables" do
+#      @wrapper.call
+#      @wrapper.instance_variables.should be_a(Hash)
+#      @wrapper.instance_variables.should == {:@called => true, :@new_var => @new_var_value, :@new_var2 => @new_var_value}
+#    end
+#
+#    it "should collect constants" do
+#      block = lambda {B=3;C=4}
+#      A=1
+#      B=2
+#      wrapper = Fixturized::Wrapper.new(self, [block])
+#      wrapper.call
+#      wrapper.constants.should == {:B => 3, :C => 4}
+#    end
+#
+#    it "should save custom stuff" do
+#      Fixturized::Wrapper.should respond_to(:custom_stuff_names)
+#      Fixturized::Wrapper.stubs(:custom_stuff_names).returns(%w{CUSTOM_DATA})
+#      block = lambda {NORMAL_DATA = 1; CUSTOM_DATA = 2}
+#      wrapper = Fixturized::Wrapper.new(self, [block])
+#      wrapper.call
+#      wrapper.custom_stuff.keys.should include("CUSTOM_DATA")
+#      wrapper.custom_stuff.keys.should_not include("NORMAL_DATA")
+#      wrapper.custom_stuff.should == {"CUSTOM_DATA" => 2}
+#    end
+#
+#    it "should save database data" do
+#      block = lambda {NORMAL_DATA = 1; CUSTOM_DATA = 2}
+#      wrapper = Fixturized::Wrapper.new(self, [block])
+#      db_mock = mock
+#      Fixturized::DatabaseHandler.expects(:collect_db_data).returns(db_mock)
+#      wrapper.call
+#      wrapper.db_data.should == db_mock
+#    end
+#  end
+#end

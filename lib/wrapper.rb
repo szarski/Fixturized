@@ -11,88 +11,84 @@ class Fixturized::Wrapper
     @block_called = false
   end
 
-  def call(*args)
-    get_start_constants
-    get_start_instance_variables
+  def call_blocks(*args)
     self.blocks.each do |b|
       b.call(*args)
     end
-    @instance_variables = get_instance_variables_diff
-    @constants = get_constants_diff
-    @custom_stuff = get_custom_stuff
-    @db_data = Fixturized::DatabaseHandler.collect_db_data
-    @block_called = true
-  end
-
-  def proper_binding
-    @block_self.respond_to?(:binding) ? @block_self.send(:binding) : binding
-  end
-
-  def get_custom_stuff
-    self.class.custom_stuff_names.inject({}) {|r,thing| r.merge(thing => eval(thing, proper_binding))}
-  end
-
-  def get_constants
-    Object.constants.inject({}) {|r,const_name| r.merge({const_name.to_sym => Object.const_get(const_name)})}
-  end
-
-  def get_start_constants
-    @start_constants = get_constants
-  end
-
-  def get_constants_diff
-    result = get_constants.to_a.reject {|name, value| @start_constants.keys.include?(name) and @start_constants[name] == value}
-    return result.inject({}){|r,(k,v)| r.merge(k=>v)}
-  end
-
-  def get_start_instance_variables
-    @start_instance_variables = get_instance_variables
-  end
-
-  def get_instance_variables_diff
-    result = get_instance_variables.to_a.reject {|name, value| @start_instance_variables.keys.include?(name) and @start_instance_variables[name] == value}
-    return result.inject({}){|r,(k,v)| r.merge(k=>v)}
-  end
-
-  def get_instance_variables
-    variable_names = @block_self.instance_variables
-    variables = variable_names.inject({}) {|r, var_name| r.merge(var_name.to_sym => @block_self.instance_variable_get(var_name))}
-    return variables || {}
-  end
-
-  def ensure_block_called_for(name)
-    raise Exception.new("attempt to call Fixturized::Wrapper##{name} without calling the block") unless @block_called
-  end
-
-  def constants
-    ensure_block_called_for 'constants'
-    @constants
-  end
-
-  def custom_stuff
-    ensure_block_called_for 'custom_stuff'
-    @custom_stuff
-  end
-
-  def db_data
-    ensure_block_called_for 'db_data'
-    @db_data
-  end
-
-  def instance_variables
-    ensure_block_called_for 'instance_variables'
-    @instance_variables
   end
 
   def hash
     Digest::MD5.hexdigest(@blocks.map(&:to_source).join('||') + '|-|' + @block_self.hash.to_s)
   end
 
-  def self.custom_stuff_names
-    CUSTOM_STUFF_NAMES
+  def proper_binding
+    @block_self.respond_to?(:binding) ? @block_self.send(:binding) : binding
   end
-
 end
+
+# (JS) will move all that to a different class
+
+#  def get_custom_stuff
+#    self.class.custom_stuff_names.inject({}) {|r,thing| r.merge(thing => eval(thing, proper_binding))}
+#  end
+#
+#  def get_constants
+#    Object.constants.inject({}) {|r,const_name| r.merge({const_name.to_sym => Object.const_get(const_name)})}
+#  end
+#
+#  def get_start_constants
+#    @start_constants = get_constants
+#  end
+#
+#  def get_constants_diff
+#    result = get_constants.to_a.reject {|name, value| @start_constants.keys.include?(name) and @start_constants[name] == value}
+#    return result.inject({}){|r,(k,v)| r.merge(k=>v)}
+#  end
+#
+#  def get_start_instance_variables
+#    @start_instance_variables = get_instance_variables
+#  end
+#
+#  def get_instance_variables_diff
+#    result = get_instance_variables.to_a.reject {|name, value| @start_instance_variables.keys.include?(name) and @start_instance_variables[name] == value}
+#    return result.inject({}){|r,(k,v)| r.merge(k=>v)}
+#  end
+#
+#  def get_instance_variables
+#    variable_names = @block_self.instance_variables
+#    variables = variable_names.inject({}) {|r, var_name| r.merge(var_name.to_sym => @block_self.instance_variable_get(var_name))}
+#    return variables || {}
+#  end
+#
+#  def ensure_block_called_for(name)
+#    raise Exception.new("attempt to call Fixturized::Wrapper##{name} without calling the block") unless @block_called
+#  end
+#
+#  def constants
+#    ensure_block_called_for 'constants'
+#    @constants
+#  end
+#
+#  def custom_stuff
+#    ensure_block_called_for 'custom_stuff'
+#    @custom_stuff
+#  end
+#
+#  def db_data
+#    ensure_block_called_for 'db_data'
+#    @db_data
+#  end
+#
+#  def instance_variables
+#    ensure_block_called_for 'instance_variables'
+#    @instance_variables
+#  end
+#
+#  def self.custom_stuff_names
+#    CUSTOM_STUFF_NAMES
+#  end
+#
+#end
 
 =begin
   attr_reader :variables, :models
