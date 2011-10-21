@@ -33,7 +33,7 @@ class Fixturized::Wrapper
   end
 
   def get_constants
-    Object.constants.inject({}) {|r,const_name| r.merge({const_name => Object.const_get(const_name)})}
+    Object.constants.inject({}) {|r,const_name| r.merge({const_name.to_sym => Object.const_get(const_name)})}
   end
 
   def get_start_constants

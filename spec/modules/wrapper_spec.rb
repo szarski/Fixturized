@@ -126,7 +126,7 @@ Fixturized::Wrapper
       B=2
       wrapper = Fixturized::Wrapper.new(self, [block])
       wrapper.call
-      wrapper.constants.should == {"B" => 3, "C" => 4}
+      wrapper.constants.should == {:B => 3, :C => 4}
     end
 
     it "should save custom stuff" do
