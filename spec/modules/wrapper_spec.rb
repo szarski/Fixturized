@@ -1,11 +1,7 @@
 require 'spec_helper'
 describe Fixturized::Wrapper do
 
-Fixturized::Wrapper
-
-  before :each do
-    Fixturized::DatabaseHandler.stubs :collect_db_data
-  end
+  subject {Fixturized::Wrapper.new self, [lambda{}]}
 
   describe "#initialize" do
     it "should take a blocks array and the self pointer" do
@@ -86,6 +82,62 @@ Fixturized::Wrapper
       block2.expects(:call).with
       subject.call_blocks
     end
+  end
+
+  describe "#fixture_filename" do
+    before do
+      subject.stubs(:hash).returns(mock(:to_s => hash_mock))
+    end
+    let(:hash_mock) {mock}
+
+    it "should return hash plus the extension" do
+      subject.fixture_filename.should == hash_mock
+    end
+  end
+
+  describe "#find_fixture" do
+    before do
+      subject.stubs(:fixture_filename).returns(filename_mock)
+    end
+    let(:filename_mock) {mock}
+
+    it "should run Fixture#find with proper filename" do
+      valid_result = mock
+      Fixturized::Fixture.expects(:find).with(filename_mock).returns valid_result
+      subject.find_fixture.should == valid_result
+    end
+  end
+
+  describe "#load_from_fixture" do
+    it "should load from fixture" do
+      fixture_mock = mock
+      fixture_content_mock = mock
+      subject.stubs(:find_fixture).returns(fixture_mock)
+      fixture_mock.stubs(:content).returns(fixture_content_mock)
+      subject.expects(:set_environment_state).with(fixture_content_mock)
+      subject.load_from_fixture
+    end
+  end
+
+  describe "#save_to_fixture" do
+    before do
+      subject.stubs(:fixture_filename).returns(filename_mock)
+      subject.stubs(:get_environment_state).returns(environment_state_mock)
+    end
+    let(:filename_mock) {mock}
+    let(:environment_state_mock) {mock}
+
+    it "should save to fixture" do
+      valid_result = mock
+      fixture_mock = mock
+      Fixturized::Fixture.expects(:new).with(filename_mock).returns fixture_mock
+      fixture_mock.expects(:content=).with(environment_state_mock)
+      fixture_mock.expects(:save)
+      subject.save_to_fixture
+    end
+  end
+
+  describe "#resolve" do
   end
 end
 

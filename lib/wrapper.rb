@@ -21,6 +21,24 @@ class Fixturized::Wrapper
     Digest::MD5.hexdigest(@blocks.map(&:to_source).join('||') + '|-|' + @block_self.hash.to_s)
   end
 
+  def fixture_filename
+    hash.to_s
+  end
+
+  def find_fixture
+    Fixturized::Fixture.find(fixture_filename)
+  end
+
+  def load_from_fixture
+    set_environment_state find_fixture.content
+  end
+
+  def save_to_fixture
+    fixture = Fixturized::Fixture.new(fixture_filename)
+    fixture.content = get_environment_state
+    fixture.save
+  end
+
   def proper_binding
     @block_self.respond_to?(:binding) ? @block_self.send(:binding) : binding
   end
