@@ -3,6 +3,10 @@ describe Fixturized::Wrapper do
 
 Fixturized::Wrapper
 
+  before :each do
+    Fixturized::DatabaseHandler.stubs :collect_db_data
+  end
+
   it "should take a blocks array and the self pointer" do
     block = lambda do
       puts 1
@@ -60,7 +64,7 @@ Fixturized::Wrapper
     end
 
     it "should raise when reading without running the block" do
-      method_names = %w{instance_variables constants custom_stuff}
+      method_names = %w{instance_variables constants custom_stuff db_data}
       method_names.each do |method_name|
         lambda {@wrapper.send(method_name)}.should raise_error {|e| e.message.should =~ /without calling/}
       end
@@ -95,6 +99,15 @@ Fixturized::Wrapper
       wrapper.custom_stuff.keys.should include("CUSTOM_DATA")
       wrapper.custom_stuff.keys.should_not include("NORMAL_DATA")
       wrapper.custom_stuff.should == {"CUSTOM_DATA" => 2}
+    end
+
+    it "should save database data" do
+      block = lambda {NORMAL_DATA = 1; CUSTOM_DATA = 2}
+      wrapper = Fixturized::Wrapper.new(self, [block])
+      db_mock = mock
+      Fixturized::DatabaseHandler.expects(:collect_db_data).returns(db_mock)
+      wrapper.call
+      wrapper.db_data.should == db_mock
     end
   end
 end

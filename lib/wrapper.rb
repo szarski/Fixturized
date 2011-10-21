@@ -20,6 +20,7 @@ class Fixturized::Wrapper
     @instance_variables = get_instance_variables_diff
     @constants = get_constants_diff
     @custom_stuff = get_custom_stuff
+    @db_data = Fixturized::DatabaseHandler.collect_db_data
     @block_called = true
   end
 
@@ -71,6 +72,11 @@ class Fixturized::Wrapper
   def custom_stuff
     ensure_block_called_for 'custom_stuff'
     @custom_stuff
+  end
+
+  def db_data
+    ensure_block_called_for 'db_data'
+    @db_data
   end
 
   def instance_variables
