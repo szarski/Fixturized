@@ -30,6 +30,7 @@ Fixturized::Wrapper
   describe "#hash" do
     subject {Fixturized::Wrapper.new(self1, [proc1])}
     let (:proc1) {lambda {|a| a=1}}
+    let (:proc1_different_arity) {lambda {|a,b| a=1}}
     let (:proc2) {lambda {|a| a=2}}
     let (:self1) {mock}
     let (:self2) {mock}
@@ -39,6 +40,14 @@ Fixturized::Wrapper
 
       it "should be the same" do
         wrapper.hash.should == subject.hash
+      end
+    end
+
+    context "when self pointers match but one of the block elements has different arity" do
+      let(:wrapper) {Fixturized::Wrapper.new(self1, [proc1_different_arity])}
+
+      it "should be different" do
+        wrapper.hash.should_not == subject.hash
       end
     end
 
