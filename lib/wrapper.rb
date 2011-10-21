@@ -39,6 +39,15 @@ class Fixturized::Wrapper
     fixture.save
   end
 
+  def resolve
+    if find_fixture
+      load_from_fixture
+    else
+      call_blocks
+      save_to_fixture
+    end
+  end
+
   def proper_binding
     @block_self.respond_to?(:binding) ? @block_self.send(:binding) : binding
   end

@@ -138,6 +138,29 @@ describe Fixturized::Wrapper do
   end
 
   describe "#resolve" do
+    context "when there is no fixture" do
+      before do
+        subject.stubs(:find_fixture).returns(nil)
+      end
+
+      it "should load environment state" do
+        subject.expects(:call_blocks)
+        subject.expects(:save_to_fixture)
+        subject.resolve
+      end
+    end
+
+    context "when there is a fixture" do
+      before do
+        fixture_mock = mock
+        subject.stubs(:find_fixture).returns(fixture_mock)
+      end
+
+      it "should call blocks and save environment state" do
+        subject.expects(:load_from_fixture)
+        subject.resolve
+      end
+    end
   end
 end
 
