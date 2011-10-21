@@ -27,19 +27,44 @@ Fixturized::Wrapper
     end
   end
 
-  it "should return a hash that is a biection onto the block's code and the self object" do
-    self1, self2=mock, mock
-    l = lambda {a=2}
-    s1a1 = Fixturized::Wrapper.new(self1, [lambda {a=1}])
-    s1a1a2 = Fixturized::Wrapper.new(self1, [lambda {a=1}, l])
-    s2a1 = Fixturized::Wrapper.new(self2, [lambda {a=1}])
-    s1a2 = Fixturized::Wrapper.new(self1, [lambda {a=2}])
-    s1a1_= Fixturized::Wrapper.new(self1, [lambda {a= 1}])
-    s1a1.hash.should == s1a1_.hash
-    s1a1.hash.should_not == s2a1.hash
-    s1a1.hash.should_not == s1a2.hash
-    s1a1a2.hash.should == s1a1a2.hash
-    s1a1a2.hash.should_not == s1a1.hash
+  describe "#hash" do
+    subject {Fixturized::Wrapper.new(self1, [proc1])}
+    let (:proc1) {lambda {|a| a=1}}
+    let (:proc2) {lambda {|a| a=2}}
+    let (:self1) {mock}
+    let (:self2) {mock}
+
+    context "when self pointers and blocks array match" do
+      let(:wrapper) {Fixturized::Wrapper.new(self1, [proc1])}
+
+      it "should be the same" do
+        wrapper.hash.should == subject.hash
+      end
+    end
+
+    context "when self pointers match but block arrays have different amount of elements" do
+      let(:wrapper) {Fixturized::Wrapper.new(self1, [proc1, proc1])}
+
+      it "should be different" do
+        wrapper.hash.should_not == subject.hash
+      end
+    end
+
+    context "when self pointers match but block arrays elements have different bodies" do
+      let(:wrapper) {Fixturized::Wrapper.new(self1, [proc2])}
+
+      it "should be different" do
+        wrapper.hash.should_not == subject.hash
+      end
+    end
+
+    context "block arrays match but self pointers are different" do
+      let(:wrapper) {Fixturized::Wrapper.new(self2, [proc1])}
+
+      it "should be different" do
+        wrapper.hash.should_not == subject.hash
+      end
+    end
   end
 
   describe "call" do
