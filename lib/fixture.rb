@@ -1,6 +1,7 @@
 require 'spec_helper'
 class Fixturized::Fixture
-  attr_reader :filename, :content
+  attr_reader :filename
+  attr_accessor :content
 
   def self.serialization_module
     Marshal

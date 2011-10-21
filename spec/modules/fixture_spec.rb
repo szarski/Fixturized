@@ -1,5 +1,6 @@
 require 'spec_helper'
 describe Fixturized::Fixture do
+  subject {Fixturized::Fixture.new("whatever")}
 
   it "should initialize given a name" do
     Fixturized::Fixture.new("whatever")
@@ -58,6 +59,14 @@ describe Fixturized::Fixture do
     it "should return nil if file not found" do
       Fixturized::FileHandler.expects(:exists?).with("whatever.yml").returns false
       Fixturized::Fixture.find("whatever").should be_nil
+    end
+  end
+
+  describe "#content" do
+    it "should return fixture's content" do
+      content_mock = mock
+      subject.content = content_mock
+      subject.content.should == content_mock
     end
   end
 
