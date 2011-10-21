@@ -100,6 +100,7 @@ Fixturized::Wrapper
     it "should accept and pass arguments" do
       arg1, arg2 = mock(), mock()
       @wrapper.blocks.first.expects(:call).with(arg1, arg2)
+      @wrapper.blocks[1].expects(:call).with(arg1, arg2)
       @wrapper.call(arg1, arg2)
     end
 
