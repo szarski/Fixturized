@@ -7,18 +7,24 @@ Fixturized::Wrapper
     Fixturized::DatabaseHandler.stubs :collect_db_data
   end
 
-  it "should take a blocks array and the self pointer" do
-    block = lambda do
-      puts 1
+  describe "#initialize" do
+    it "should take a blocks array and the self pointer" do
+      block = lambda do
+        puts 1
+      end
+      described_class.new(self, [block])
     end
-    Fixturized::Wrapper.new(self, [block])
-  end
 
-  it "should raise if no block given" do
-    lambda {Fixturized::Wrapper.new(self)}.should raise_exception
-  end
+    it "should raise if no block given" do
+      lambda {described_class.new(self)}.should raise_exception
+    end
 
-  it "should accept multiple blocks" do
+    it "should accept multiple blocks" do
+      block = lambda do
+        puts 1
+      end
+      described_class.new(self, [block, block])
+    end
   end
 
   it "should return a hash that is a biection onto the block's code and the self object" do
