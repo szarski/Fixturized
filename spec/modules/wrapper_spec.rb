@@ -14,8 +14,7 @@ Fixturized::Wrapper
     lambda {Fixturized::Wrapper.new(self)}.should raise_exception
   end
 
-  it "should accept multiple blocks" do
-  end
+  it "should accept multiple blocks"
 
   it "should return a hash that is a biection onto the block's code and the self object" do
     self1, self2=mock, mock
@@ -82,7 +81,7 @@ Fixturized::Wrapper
       B=2
       wrapper = Fixturized::Wrapper.new(self, [block])
       wrapper.call
-      wrapper.constants.should == {"B" => 3, "C" => 4}
+      wrapper.constants.should == {:B => 3, :C => 4}
     end
 
     it "should save custom stuff" do
