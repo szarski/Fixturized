@@ -162,6 +162,14 @@ describe Fixturized::Wrapper do
       end
     end
   end
+
+  describe "#get_environment_state" do
+    it "should initialize Environment and get it's state"
+  end
+
+  describe "#set_environment_state" do
+    it "should initialize Environment and set it's state"
+  end
 end
 
 # (JS) will move all that to a different class
