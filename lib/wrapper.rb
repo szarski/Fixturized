@@ -54,9 +54,9 @@ class Fixturized::Wrapper
     return result.inject({}){|r,(k,v)| r.merge(k=>v)}
   end
 
-  def get_instance_variables(variable_names=nil)
+  def get_instance_variables
     variable_names = @block_self.instance_variables
-    variables = variable_names.inject({}) {|r, var_name| r.merge(var_name => @block_self.instance_variable_get(var_name))}
+    variables = variable_names.inject({}) {|r, var_name| r.merge(var_name.to_sym => @block_self.instance_variable_get(var_name))}
     return variables || {}
   end
 
