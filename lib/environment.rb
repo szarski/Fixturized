@@ -19,7 +19,7 @@ class Fixturized::Environment
 
   def get_instance_variables
     variable_names = self_pointer.instance_variables
-    variables = variable_names.inject({}) {|r, var_name| r.merge(var_name.gsub(/^@/,'').to_sym => self_pointer.instance_variable_get(var_name))}
+    variables = variable_names.inject({}) {|r, var_name| r.merge(var_name.to_s.gsub(/^@/,'').to_sym => self_pointer.instance_variable_get(var_name))}
     return variables || {}
   end
 
