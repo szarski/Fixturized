@@ -5,10 +5,10 @@ describe Fixturized::Wrapper do
 
   describe "#initialize" do
     it "should take a blocks array and the self pointer" do
-      block = lambda do
-        puts 1
-      end
-      described_class.new(self, [block])
+      block = lambda {puts 1}
+      pointer = mock
+      wrapper = described_class.new(pointer, [block])
+      wrapper.self_pointer.should == pointer
     end
 
     it "should raise if no block given" do
