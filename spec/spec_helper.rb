@@ -12,3 +12,7 @@ require 'mocha'
 RSpec.configure do |config|
    config.mock_with :mocha
 end
+
+def scenario(*args, &block)
+  it(*args, &block)
+end
