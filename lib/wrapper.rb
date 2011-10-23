@@ -55,4 +55,12 @@ class Fixturized::Wrapper
   def self_pointer
     @block_self
   end
+
+  def get_environment_state
+    Fixturized::Environment.new(self_pointer).state
+  end
+
+  def set_environment_state(state)
+    Fixturized::Environment.new(self_pointer).state = state
+  end
 end

@@ -164,11 +164,23 @@ describe Fixturized::Wrapper do
   end
 
   describe "#get_environment_state" do
-    it "should initialize Environment and get it's state"
+    it "should initialize Environment and get it's state" do
+      pointer_mock, environment, state_mock = mock, mock, mock
+      subject.stubs(:self_pointer).returns(pointer_mock)
+      Fixturized::Environment.expects(:new).with(pointer_mock).returns(environment)
+      environment.stubs(:state).returns(state_mock)
+      subject.get_environment_state.should == state_mock
+    end
   end
 
   describe "#set_environment_state" do
-    it "should initialize Environment and set it's state"
+    it "should initialize Environment and set it's state" do
+      pointer_mock, environment, state_mock = mock, mock, mock
+      subject.stubs(:self_pointer).returns(pointer_mock)
+      Fixturized::Environment.expects(:new).with(pointer_mock).returns(environment)
+      environment.expects(:state=).with(state_mock)
+      subject.set_environment_state(state_mock)
+    end
   end
 end
 
