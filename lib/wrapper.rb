@@ -33,9 +33,9 @@ class Fixturized::Wrapper
     set_environment_state find_fixture.content
   end
 
-  def save_to_fixture
+  def call_blocks_and_save_to_fixture
     fixture = Fixturized::Fixture.new(fixture_filename)
-    fixture.content = get_environment_state
+    fixture.content = call_blocks_and_get_environment_state
     fixture.save
   end
 
@@ -43,8 +43,7 @@ class Fixturized::Wrapper
     if find_fixture
       load_from_fixture
     else
-      call_blocks
-      save_to_fixture
+      call_blocks_and_save_to_fixture
     end
   end
 
@@ -56,8 +55,10 @@ class Fixturized::Wrapper
     @block_self
   end
 
-  def get_environment_state
-    Fixturized::Environment.new(self_pointer).state
+  def call_blocks_and_get_environment_state
+    Fixturized::Environment.new(self_pointer).state do
+      call_blocks
+    end
   end
 
   def set_environment_state(state)

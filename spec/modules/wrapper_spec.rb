@@ -119,10 +119,10 @@ describe Fixturized::Wrapper do
     end
   end
 
-  describe "#save_to_fixture" do
+  describe "#call_blocks_and_save_to_fixture" do
     before do
       subject.stubs(:fixture_filename).returns(filename_mock)
-      subject.stubs(:get_environment_state).returns(environment_state_mock)
+      subject.stubs(:call_blocks_and_get_environment_state).returns(environment_state_mock)
     end
     let(:filename_mock) {mock}
     let(:environment_state_mock) {mock}
@@ -133,7 +133,7 @@ describe Fixturized::Wrapper do
       Fixturized::Fixture.expects(:new).with(filename_mock).returns fixture_mock
       fixture_mock.expects(:content=).with(environment_state_mock)
       fixture_mock.expects(:save)
-      subject.save_to_fixture
+      subject.call_blocks_and_save_to_fixture
     end
   end
 
@@ -144,8 +144,7 @@ describe Fixturized::Wrapper do
       end
 
       it "should load environment state" do
-        subject.expects(:call_blocks)
-        subject.expects(:save_to_fixture)
+        subject.expects(:call_blocks_and_save_to_fixture)
         subject.resolve
       end
     end
@@ -163,13 +162,13 @@ describe Fixturized::Wrapper do
     end
   end
 
-  describe "#get_environment_state" do
+  describe "#call_blocks_and_get_environment_state" do
     it "should initialize Environment and get it's state" do
       pointer_mock, environment, state_mock = mock, mock, mock
       subject.stubs(:self_pointer).returns(pointer_mock)
       Fixturized::Environment.expects(:new).with(pointer_mock).returns(environment)
-      environment.stubs(:state).returns(state_mock)
-      subject.get_environment_state.should == state_mock
+      environment.stubs(:state).with{ "should call the blocks here.."}.returns(state_mock)
+      subject.call_blocks_and_get_environment_state.should == state_mock
     end
   end
 
