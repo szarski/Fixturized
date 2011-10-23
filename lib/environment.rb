@@ -6,7 +6,11 @@ class Fixturized::Environment
   end
 
   def state
-    {:instance_variables => get_instance_variables}
+    get_beginning_instance_variables
+    if block_given?
+      yield
+    end
+    {:instance_variables => get_instance_variables_diff}
   end
 
   def state=(val)
@@ -23,6 +27,15 @@ class Fixturized::Environment
     variables.each do |name, value|
       self_pointer.instance_variable_set "@#{name}", value
     end
+  end
+
+  def get_beginning_instance_variables
+    @beginning_instance_variables = get_instance_variables
+  end
+
+  def get_instance_variables_diff
+    @beginning_instance_variables ||= {}
+    get_instance_variables.to_a.select {|k,v| !@beginning_instance_variables.has_key?(k) or @beginning_instance_variables[k] != v}.inject({}) {|r, (k,v)| r.merge(k=>v)}
   end
 end
 
